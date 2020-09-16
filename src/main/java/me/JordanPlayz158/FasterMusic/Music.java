@@ -32,6 +32,8 @@ public class Music extends ListenerAdapter {
                 event.getChannel().sendMessage("Could not convert String to BigInteger, please ensure you put the ID of the voice channel in correctly").queue();
                 e.printStackTrace();
             }
+            
+            PlayerManager.getInstance().loadAndPlay(event.getGuild(), "https://www.youtube.com/watch?v=zbYFX4bxKyg");
         }
     }
 

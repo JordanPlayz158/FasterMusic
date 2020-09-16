@@ -1,20 +1,33 @@
 package me.JordanPlayz158.FasterMusic;
 
-import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.JDABuilder;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.requests.GatewayIntent;
-
-import javax.security.auth.login.LoginException;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-
 import static me.JordanPlayz158.Utils.copyFile.copyFile;
 import static me.JordanPlayz158.Utils.initiateLog.initiateLog;
 import static me.JordanPlayz158.Utils.loadConfig.loadConfig;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.security.auth.login.LoginException;
+
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.requests.GatewayIntent;
+
 public class Main {
+	
+	public static JDA jda;
+	
+	public static List<String> tracks = Arrays.asList(new String[] 
+			{"https://www.youtube.com/watch?v=zbYFX4bxKyg", 
+					"https://www.youtube.com/watch?v=lGeTySE9ZAc", 
+					"https://www.youtube.com/watch?v=y1NEl1BWgm0", 
+					"https://www.youtube.com/watch?v=i3Ck2f9CWYs"
+					});
+	
     public static void main(String[] args) throws IOException, LoginException, InterruptedException {
         // Initiates the log
         initiateLog();
@@ -29,25 +42,25 @@ public class Main {
             System.out.println("You have to provide a token in your config file!");
             System.exit(1);
         }
+        
+        JDABuilder builder = JDABuilder.createDefault(token);
+        
+        builder.enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_VOICE_STATES);
+        builder.addEventListeners(new Music());
+        
+        builder.setActivity(Activity.streaming("24/7 Faster Stream", "https://www.youtube.com/channel/UC-SK9mJ7TCw_zjdi5AQJoEQ"));
 
-        // Token is read from the config.json
-        JDA jda = JDABuilder.createLight(token, GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_VOICE_STATES)
-                .addEventListeners(new Music())
-                .build()
-                .awaitReady();
-
-        Guild guild = null;
-
-        Object[] Guilds = jda.getGuilds().toArray();
-
-        for(Object s : Guilds) {
-            guild = (Guild) s;
-            System.out.println(guild.getId());
+        jda = builder.build();
+        
+        jda.awaitReady();
+        
+        jda.getGuilds().forEach(guild -> {
+        	System.out.println(guild.getId());
+        	
             if(Files.exists(Path.of(guild.getId() + ".json"))) {
-                guild.getAudioManager().openAudioConnection(guild.getVoiceChannelById(loadConfig(guild.getId() + ".json", "voiceChannel")));
+                guild.getAudioManager().openAudioConnection(
+                		guild.getVoiceChannelById(loadConfig(guild.getId() + ".json", "voiceChannel")));
             }
-        }
-
-        //Implement LavaPlayer here......
+        });
     }
 }
