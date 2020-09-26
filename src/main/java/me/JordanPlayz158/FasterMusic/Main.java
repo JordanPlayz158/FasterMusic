@@ -18,6 +18,7 @@ public class Main {
 
     static {
         try {
+            copyFile("songs.txt", "songs.txt");
             File file = new File("songs.txt");
             BufferedReader br = new BufferedReader(new FileReader(file));
 
