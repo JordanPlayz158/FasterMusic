@@ -8,7 +8,7 @@ import org.json.simple.JSONObject;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.math.BigInteger;
+import java.util.Collections;
 
 import static me.JordanPlayz158.Utils.loadConfig.loadConfig;
 
@@ -22,20 +22,30 @@ public class Music extends ListenerAdapter {
             String voiceChatIDString = event.getMessage().getContentRaw().replaceAll("-setVoiceChannel| ", "");
 
             try {
-                BigInteger voiceChatID = new BigInteger(voiceChatIDString);
+                long voiceChatID = Long.parseLong(voiceChatIDString);
 
                 Guild guild = event.getGuild();
 
-                makeConfig(guild.getId() + ".json", "voiceChannel", voiceChatID.toString());
+                makeConfig(guild.getId() + ".json", "voiceChannel", String.valueOf(voiceChatID));
                 guild.getAudioManager().openAudioConnection(guild.getVoiceChannelById(loadConfig(guild.getId() + ".json", "voiceChannel")));
             } catch (NumberFormatException e) {
-                event.getChannel().sendMessage("Could not convert String to BigInteger, please ensure you put the ID of the voice channel in correctly").queue();
-                e.printStackTrace();
+                String errorMessage = "Could not convert String to BigInteger, please ensure you put the ID of the voice channel in correctly";
+
+                event.getChannel().sendMessage(errorMessage).queue();
+                System.out.println(errorMessage);
             }
-            
-            PlayerManager.getInstance().loadAndPlay(event.getGuild(), "https://www.youtube.com/watch?v=zbYFX4bxKyg");
+
+            PlayMusic();
+            }
+        }
+
+    public static void PlayMusic() {
+        Collections.shuffle(Main.tracks);
+        for(Guild guild : ReadyEvent.guilds) {
+            PlayerManager.getInstance().loadAndPlay(guild, Main.tracks.get(0));
         }
     }
+
 
     // Function I have made for other projects that I put into this one for simple json file/data appending
     @SuppressWarnings("unchecked")

@@ -1,33 +1,36 @@
 package me.JordanPlayz158.FasterMusic;
 
-import static me.JordanPlayz158.Utils.copyFile.copyFile;
-import static me.JordanPlayz158.Utils.initiateLog.initiateLog;
-import static me.JordanPlayz158.Utils.loadConfig.loadConfig;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.security.auth.login.LoginException;
-
-import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 
+import javax.security.auth.login.LoginException;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import static me.JordanPlayz158.Utils.copyFile.copyFile;
+import static me.JordanPlayz158.Utils.initiateLog.initiateLog;
+import static me.JordanPlayz158.Utils.loadConfig.loadConfig;
+
 public class Main {
-	
-	public static JDA jda;
-	
-	public static List<String> tracks = Arrays.asList(new String[] 
-			{"https://www.youtube.com/watch?v=zbYFX4bxKyg", 
-					"https://www.youtube.com/watch?v=lGeTySE9ZAc", 
-					"https://www.youtube.com/watch?v=y1NEl1BWgm0", 
-					"https://www.youtube.com/watch?v=i3Ck2f9CWYs"
-					});
-	
+	public static List<String> tracks = new ArrayList<>();
+
+    static {
+        try {
+            File file = new File("songs.txt");
+            BufferedReader br = new BufferedReader(new FileReader(file));
+
+            String string;
+
+            while((string = br.readLine()) != null) {
+                tracks.add(string);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void main(String[] args) throws IOException, LoginException, InterruptedException {
         // Initiates the log
         initiateLog();
@@ -43,24 +46,11 @@ public class Main {
             System.exit(1);
         }
         
-        JDABuilder builder = JDABuilder.createDefault(token);
-        
-        builder.enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_VOICE_STATES);
-        builder.addEventListeners(new Music());
-        
-        builder.setActivity(Activity.streaming("24/7 Faster Stream", "https://www.youtube.com/channel/UC-SK9mJ7TCw_zjdi5AQJoEQ"));
-
-        jda = builder.build();
-        
-        jda.awaitReady();
-        
-        jda.getGuilds().forEach(guild -> {
-        	System.out.println(guild.getId());
-        	
-            if(Files.exists(Path.of(guild.getId() + ".json"))) {
-                guild.getAudioManager().openAudioConnection(
-                		guild.getVoiceChannelById(loadConfig(guild.getId() + ".json", "voiceChannel")));
-            }
-        });
+        JDABuilder.createLight(token, GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_VOICE_STATES)
+                .addEventListeners(new Music())
+                .addEventListeners(new ReadyEvent())
+                .setActivity(Activity.streaming("24/7 Faster Stream", "https://www.youtube.com/watch?v=nOOHjGIsoPg"))
+                .build()
+                .awaitReady();
     }
 }
