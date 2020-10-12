@@ -14,28 +14,25 @@ import java.util.Collections;
 public class Music extends ListenerAdapter {
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
-        if(event.getMessage().getAuthor().isBot() || !event.getMessage().getContentRaw().startsWith("-setVoiceChannel"))
+        if(event.getMessage().getAuthor().isBot() || !event.getMessage().getContentRaw().startsWith("-setVoiceChannel") || !event.getMember().hasPermission(Permission.ADMINISTRATOR))
             return;
 
-        if(event.getMember().hasPermission(Permission.ADMINISTRATOR)) {
-            String voiceChatIDString = event.getMessage().getContentRaw().replaceAll("-setVoiceChannel| ", "");
+        String voiceChatIDString = event.getMessage().getContentRaw().replaceAll("-setVoiceChannel| ", "");
 
-            try {
-                long voiceChatID = Long.parseLong(voiceChatIDString);
+        try {
+            long voiceChatID = Long.parseLong(voiceChatIDString);
 
-                Guild guild = event.getGuild();
+            Guild guild = event.getGuild();
 
-                makeConfig(guild.getId() + ".json", voiceChatID);
-                guild.getAudioManager().openAudioConnection(guild.getVoiceChannelById(loadJson.value(guild.getId() + ".json", "voiceChannel")));
-            } catch (NumberFormatException e) {
-                String errorMessage = "Could not convert String to BigInteger, please ensure you put the ID of the voice channel in correctly";
-
-                event.getChannel().sendMessage(errorMessage).queue();
-                System.out.println(errorMessage);
-            }
-
+            makeConfig(guild.getId() + ".json", voiceChatID);
+            guild.getAudioManager().openAudioConnection(guild.getVoiceChannelById(loadJson.value(guild.getId() + ".json", "voiceChannel")));
             PlayMusic();
-            }
+        } catch (NumberFormatException e) {
+            String errorMessage = "Could not convert String to Long, please ensure you put the ID of the voice channel in correctly";
+
+            event.getChannel().sendMessage(errorMessage).queue();
+            System.out.println(voiceChatIDString + " - " + errorMessage);
+        }
         }
 
     public static void PlayMusic() {
