@@ -17,10 +17,10 @@ public class Music extends ListenerAdapter {
         if(event.getMessage().getAuthor().isBot() || !event.getMessage().getContentRaw().startsWith("-setVoiceChannel") || !event.getMember().hasPermission(Permission.ADMINISTRATOR))
             return;
 
-        String voiceChatIDString = event.getMessage().getContentRaw().replaceAll("-setVoiceChannel| ", "");
+        String voiceChatID = event.getMessage().getContentRaw().replaceAll("-setVoiceChannel| ", "");
 
         try {
-            long voiceChatID = Long.parseLong(voiceChatIDString);
+            Long.parseLong(voiceChatID);
 
             Guild guild = event.getGuild();
 
@@ -31,7 +31,7 @@ public class Music extends ListenerAdapter {
             String errorMessage = "Could not convert String to Long, please ensure you put the ID of the voice channel in correctly";
 
             event.getChannel().sendMessage(errorMessage).queue();
-            System.out.println(voiceChatIDString + " - " + errorMessage);
+            System.out.println(voiceChatID + " - " + errorMessage);
         }
         }
 
@@ -42,7 +42,7 @@ public class Music extends ListenerAdapter {
         }
     }
 
-    public static void makeConfig(String file, Long value) {
+    public static void makeConfig(String file, String value) {
         String json = new Gson().toJson(new VoiceChannel(value));
 
         // Write JSON file

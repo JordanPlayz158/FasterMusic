@@ -1,9 +1,9 @@
 package me.JordanPlayz158.FasterMusic;
 
 public class VoiceChannel {
-    private Long voiceChannel;
+    private String voiceChannel;
 
-    public VoiceChannel(Long voiceChannel) {
+    public VoiceChannel(String voiceChannel) {
         this.voiceChannel = voiceChannel;
     }
 }
