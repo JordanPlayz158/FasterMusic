@@ -1,17 +1,20 @@
 package me.JordanPlayz158.FasterMusic;
 
+import me.JordanPlayz158.Utils.loadJson;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 
 import javax.security.auth.login.LoginException;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import static me.JordanPlayz158.Utils.copyFile.copyFile;
 import static me.JordanPlayz158.Utils.initiateLog.initiateLog;
-import static me.JordanPlayz158.Utils.loadConfig.loadConfig;
 
 public class Main {
 	public static List<String> tracks = new ArrayList<>();
@@ -39,7 +42,7 @@ public class Main {
         // Copy config
         copyFile("config.json", "config.json");
 
-        String token = loadConfig("config.json", "token");
+        String token = loadJson.value("config.json", "token");
 
         // Checks if the Token is 1 character or less and if so, tell the person they need to provide a token
         if(token.length() <= 1) {

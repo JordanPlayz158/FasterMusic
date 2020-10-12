@@ -1,16 +1,15 @@
 package me.JordanPlayz158.FasterMusic;
 
+import com.google.gson.Gson;
+import me.JordanPlayz158.Utils.loadJson;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import org.json.simple.JSONObject;
 
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Collections;
-
-import static me.JordanPlayz158.Utils.loadConfig.loadConfig;
 
 public class Music extends ListenerAdapter {
     @Override
@@ -26,8 +25,8 @@ public class Music extends ListenerAdapter {
 
                 Guild guild = event.getGuild();
 
-                makeConfig(guild.getId() + ".json", "voiceChannel", String.valueOf(voiceChatID));
-                guild.getAudioManager().openAudioConnection(guild.getVoiceChannelById(loadConfig(guild.getId() + ".json", "voiceChannel")));
+                makeConfig(guild.getId() + ".json", voiceChatID);
+                guild.getAudioManager().openAudioConnection(guild.getVoiceChannelById(loadJson.value(guild.getId() + ".json", "voiceChannel")));
             } catch (NumberFormatException e) {
                 String errorMessage = "Could not convert String to BigInteger, please ensure you put the ID of the voice channel in correctly";
 
@@ -46,17 +45,12 @@ public class Music extends ListenerAdapter {
         }
     }
 
-
-    // Function I have made for other projects that I put into this one for simple json file/data appending
-    @SuppressWarnings("unchecked")
-    public static void makeConfig(String file, String key, String value) {
-        // Making the JSONObject and putting the key and value into it
-        JSONObject append = new JSONObject();
-        append.put(key, value);
+    public static void makeConfig(String file, Long value) {
+        String json = new Gson().toJson(new VoiceChannel(value));
 
         // Write JSON file
         try (FileWriter Jfile = new FileWriter(file)) {
-            Jfile.write(append.toJSONString());
+            Jfile.write(json);
             Jfile.flush();
         } catch (IOException e) {
             e.printStackTrace();
