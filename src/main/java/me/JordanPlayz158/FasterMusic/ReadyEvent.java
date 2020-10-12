@@ -14,7 +14,7 @@ public class ReadyEvent extends ListenerAdapter {
 
     public void onReady(net.dv8tion.jda.api.events.ReadyEvent event) {
         event.getJDA().getGuilds().forEach(guild -> {
-            System.out.println(guild.getId());
+            System.out.println(guild.getName() + " - " + guild.getId());
 
             guilds.add(guild);
 
