@@ -1,6 +1,7 @@
 package me.JordanPlayz158.FasterMusic;
 
 import me.JordanPlayz158.Utils.loadJson;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -10,10 +11,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ReadyEvent extends ListenerAdapter {
-    public static List<Guild> guilds = new ArrayList<>();
+    private static List<Guild> guilds = new ArrayList<>();
 
     public void onReady(net.dv8tion.jda.api.events.ReadyEvent event) {
-        event.getJDA().getGuilds().forEach(guild -> {
+        getGuilds(event.getJDA());
+    }
+
+    public void getGuilds(JDA jda) {
+        jda.getGuilds().forEach(guild -> {
             System.out.println(guild.getName() + " - " + guild.getId());
 
             guilds.add(guild);
@@ -25,5 +30,13 @@ public class ReadyEvent extends ListenerAdapter {
             }
 
         });
+    }
+
+    public static void getGuildsList(JDA jda) {
+        guilds = jda.getGuilds();
+    }
+
+    public static List<Guild> getGuildsList() {
+        return guilds;
     }
 }

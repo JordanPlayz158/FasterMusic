@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 import me.JordanPlayz158.Utils.loadJson;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
+import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -33,11 +35,19 @@ public class Music extends ListenerAdapter {
             event.getChannel().sendMessage(errorMessage).queue();
             System.out.println(voiceChatID + " - " + errorMessage);
         }
-        }
+    }
+
+    public void onGuildJoin(GuildJoinEvent event) {
+        ReadyEvent.getGuildsList(event.getJDA());
+    }
+
+    public void onGuildLeave(GuildLeaveEvent event) {
+        ReadyEvent.getGuildsList(event.getJDA());
+    }
 
     public static void PlayMusic() {
         Collections.shuffle(Main.tracks);
-        for(Guild guild : ReadyEvent.guilds) {
+        for(Guild guild : ReadyEvent.getGuildsList()) {
             PlayerManager.getInstance().loadAndPlay(guild, Main.tracks.get(0));
         }
     }
