@@ -58,7 +58,6 @@ public class Music extends ListenerAdapter {
         // Write JSON file
         try (FileWriter Jfile = new FileWriter(file)) {
             Jfile.write(json);
-            Jfile.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }

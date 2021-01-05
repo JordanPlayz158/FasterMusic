@@ -30,6 +30,8 @@ public class Main {
             while((string = br.readLine()) != null) {
                 tracks.add(string);
             }
+
+            br.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
