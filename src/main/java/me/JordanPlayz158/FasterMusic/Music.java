@@ -12,11 +12,12 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Objects;
 
 public class Music extends ListenerAdapter {
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
-        if(event.getMessage().getAuthor().isBot() || !event.getMessage().getContentRaw().startsWith("-setVoiceChannel") || !event.getMember().hasPermission(Permission.ADMINISTRATOR))
+        if(event.getMessage().getAuthor().isBot() || !event.getMessage().getContentRaw().startsWith("-setVoiceChannel") || !Objects.requireNonNull(event.getMember()).hasPermission(Permission.ADMINISTRATOR))
             return;
 
         String voiceChatID = event.getMessage().getContentRaw().replaceAll("-setVoiceChannel| ", "");
@@ -56,8 +57,8 @@ public class Music extends ListenerAdapter {
         String json = new Gson().toJson(new VoiceChannel(value));
 
         // Write JSON file
-        try (FileWriter Jfile = new FileWriter(file)) {
-            Jfile.write(json);
+        try (FileWriter fFile = new FileWriter(file)) {
+            fFile.write(json);
         } catch (IOException e) {
             e.printStackTrace();
         }
