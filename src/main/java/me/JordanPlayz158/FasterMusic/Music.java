@@ -21,7 +21,7 @@ public class Music extends ListenerAdapter {
         if(event.getMessage().getAuthor().isBot() || !event.getMessage().getContentRaw().startsWith("-setVoiceChannel") || !Objects.requireNonNull(event.getMember()).hasPermission(Permission.ADMINISTRATOR))
             return;
 
-        String voiceChatID = event.getMessage().getContentRaw().substring(16);
+        String voiceChatID = event.getMessage().getContentRaw().substring(17);
 
         try {
             Long.parseLong(voiceChatID);
