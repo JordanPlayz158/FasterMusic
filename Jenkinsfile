@@ -14,4 +14,7 @@ pipeline {
     }
 
   }
+  environment {
+    JAVA_HOME = '/usr/lib/jvm/adoptopenjdk-11-hotspot-amd64'
+  }
 }
