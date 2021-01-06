@@ -1,6 +1,8 @@
 package me.JordanPlayz158.FasterMusic;
 
-import me.JordanPlayz158.Utils.loadJson;
+import me.jordanplayz158.utils.FileUtils;
+import me.jordanplayz158.utils.LoadJson;
+import me.jordanplayz158.utils.initiateLog;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -13,17 +15,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static me.JordanPlayz158.Utils.copyFile.copyFile;
-import static me.JordanPlayz158.Utils.initiateLog.initiateLog;
-
 public class Main {
+    private static final File songsFile = new File("songs.txt");
+    private static final File configFile = new File("config.json");
 	public static List<String> tracks = new ArrayList<>();
 
     static {
         try {
-            copyFile("songs.txt", "songs.txt");
-            File file = new File("songs.txt");
-            BufferedReader br = new BufferedReader(new FileReader(file));
+            FileUtils.copyFile(songsFile, songsFile);
+            BufferedReader br = new BufferedReader(new FileReader(songsFile));
 
             String string;
 
@@ -39,12 +39,12 @@ public class Main {
 
     public static void main(String[] args) throws IOException, LoginException, InterruptedException {
         // Initiates the log
-        initiateLog();
+        initiateLog.initiateLog();
 
         // Copy config
-        copyFile("config.json", "config.json");
+        FileUtils.copyFile(configFile, configFile);
 
-        String token = loadJson.value("config.json", "token");
+        String token = LoadJson.value(configFile, "token");
 
         // Checks if the Token is 1 character or less and if so, tell the person they need to provide a token
         if(token.length() <= 1) {

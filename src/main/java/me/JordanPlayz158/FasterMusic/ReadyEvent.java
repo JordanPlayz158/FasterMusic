@@ -1,12 +1,12 @@
 package me.JordanPlayz158.FasterMusic;
 
-import me.JordanPlayz158.Utils.loadJson;
+import me.jordanplayz158.utils.LoadJson;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
+import java.io.File;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,9 +23,11 @@ public class ReadyEvent extends ListenerAdapter {
 
             guilds.add(guild);
 
-            if(Files.exists(Path.of(guild.getId() + ".json"))) {
+            File guildFile = new File(guild.getId() + ".json");
+
+            if(Files.exists(guildFile.toPath())) {
                 guild.getAudioManager().openAudioConnection(
-                        guild.getVoiceChannelById(loadJson.value(guild.getId() + ".json", "voiceChannel")));
+                        guild.getVoiceChannelById(LoadJson.value(guildFile, "voiceChannel")));
                 Music.PlayMusic();
             }
 
